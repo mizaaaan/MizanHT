@@ -4,8 +4,7 @@ import { X } from 'lucide-react'
 const BG_URL =
   'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260729_022513_486985a2-ac8c-4278-91a8-071dcd9fcaff.png&w=1'
 
-const PORTRAIT_URL =
-  'https://images.netlify.com/nfp_Bpc9L9WUDNJwzbtk4Sv9v9iJ2ZXKZtKu3d4c'
+const PORTRAIT_URL = '/portrait.png'
 
 const NAV_LINKS = ['Story', 'Jobs', 'Message']
 const SOCIAL_LINKS = ['Instagram', 'TikTok', 'YouTube']
@@ -51,9 +50,9 @@ function App() {
         style={{ animationDelay: '500ms' }}
       >
         <div className="marquee flex w-max whitespace-nowrap font-hn text-[16vh] leading-none text-cream sm:text-[26vh]">
-          <span className="pr-[6vw]">Marcus&nbsp;&mdash;&nbsp;Bennet&nbsp;</span>
+          <span className="pr-[6vw]">Mizan&nbsp;&mdash;&nbsp;Health&nbsp;Technologist&nbsp;</span>
           <span className="pr-[6vw]" aria-hidden="true">
-            Marcus&nbsp;&mdash;&nbsp;Bennet&nbsp;
+            Mizan&nbsp;&mdash;&nbsp;Health&nbsp;Technologist&nbsp;
           </span>
         </div>
       </div>
@@ -67,7 +66,7 @@ function App() {
       {/* Footer blurb */}
       <footer className="absolute inset-x-0 bottom-0 z-30 flex items-end justify-between px-6 pb-5 font-hn text-xs leading-relaxed sm:z-10 sm:px-10 sm:pb-8 sm:text-sm">
         <div className="anim-fade-up" style={{ animationDelay: '1400ms' }}>
-          <p>Visuals Composer</p>
+          <p>Health Technologist</p>
           <p>Digital Crafter</p>
           <p>Obsessed by The Office</p>
         </div>
@@ -75,8 +74,8 @@ function App() {
           className="anim-fade-up text-right"
           style={{ animationDelay: '1550ms' }}
         >
-          <p>A homage to</p>
-          <p>Marcus Holloway</p>
+          <p>Portfolio of</p>
+          <p>Mizanur Rahman</p>
         </div>
       </footer>
 
@@ -95,7 +94,7 @@ function App() {
           className="anim-fade-up font-hn text-lg tracking-wide"
           style={{ animationDelay: '800ms' }}
         >
-          Marcus
+          Mizan
         </a>
 
         <div className="hidden items-start gap-16 sm:flex lg:gap-24">
@@ -103,7 +102,7 @@ function App() {
             className="anim-fade-up text-sm"
             style={{ animationDelay: '900ms' }}
           >
-            2025
+            2026
           </span>
           <nav className="flex flex-col gap-0.5 text-sm">
             {NAV_LINKS.map((label, i) => (
