@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 
-// TODO: replace with a real inbox so the message form works end-to-end
-const CONTACT_EMAIL = 'hello@example.com'
+const CONTACT_EMAIL = 'md.mizan235@gmail.com'
 
 const SOCIAL_LINKS = ['Instagram', 'TikTok', 'YouTube']
 
@@ -354,6 +353,15 @@ export function MessagePage() {
             Thanks — your email app should open with the message ready to send.
           </p>
         ) : null}
+      </Section>
+
+      <Section title="Or Email Me Directly">
+        <a
+          href={`mailto:${CONTACT_EMAIL}`}
+          className="text-sm text-cream/85 underline-offset-4 hover:underline"
+        >
+          {CONTACT_EMAIL}
+        </a>
       </Section>
 
       <Section title="Find Me">
