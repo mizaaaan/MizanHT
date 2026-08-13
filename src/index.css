@@ -11,6 +11,19 @@ body {
   font-family: "Helvetica Neue ME", Helvetica, Arial, sans-serif;
 }
 
+/* ---------------- Focus indicators ---------------- */
+
+/* Never paint a ring for pointer/touch focus (e.g. tapping the mobile
+   menu) — only keyboard users get a visible indicator. */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 1px solid var(--color-cream);
+  outline-offset: 4px;
+}
+
 /* ---------------- Entrance animations ---------------- */
 
 @keyframes fade-in {

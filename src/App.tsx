@@ -36,7 +36,9 @@ function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // Move focus into the drawer when it opens and trap Tab inside it
+  // Move focus into the drawer when it opens and trap Tab inside it.
+  // Focus the panel itself (tabIndex -1) rather than the first link so
+  // tapping the menu never paints a focus ring on a nav item.
   useEffect(() => {
     if (!open) return
     const panel = panelRef.current
@@ -46,18 +48,21 @@ function App() {
     )
     const first = focusables[0] ?? panel
     const last = focusables[focusables.length - 1] ?? panel
-    first.focus()
+    panel.focus()
 
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return
       const active = document.activeElement
-      const inside = active instanceof Node && panel.contains(active)
-      if (e.shiftKey) {
-        if (!inside || active === first) {
-          e.preventDefault()
-          last.focus()
-        }
-      } else if (!inside || active === last) {
+      const inPanel =
+        active instanceof Node && (active === panel || panel.contains(active))
+      if (!inPanel || active === panel) {
+        // Wrap to the end when tabbing backwards, the start otherwise
+        e.preventDefault()
+        ;(e.shiftKey ? last : first).focus()
+      } else if (active === first && e.shiftKey) {
+        e.preventDefault()
+        last.focus()
+      } else if (active === last && !e.shiftKey) {
         e.preventDefault()
         first.focus()
       }
@@ -221,6 +226,7 @@ function App() {
           aria-label="Menu"
           aria-hidden={!open}
           inert={!open}
+          tabIndex={-1}
           className={`fixed right-0 top-0 z-40 h-full w-[80%] max-w-sm bg-[#141414] px-8 py-10 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] ${
             open ? 'translate-x-0' : 'translate-x-full'
           }`}
