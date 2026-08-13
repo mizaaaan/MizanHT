@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 
 const BG_URL =
-  'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260729_022513_486985a2-ac8c-4278-91a8-071dcd9fcaff.png&w=1'
+  'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260729_022513_486985a2-ac8c-4278-91a8-071dcd9fcaff.png&w=1280&q=85'
 
 const PORTRAIT_URL = '/portrait.png'
 
@@ -205,6 +205,7 @@ function App() {
                 <a
                   key={label}
                   href="#"
+                  onClick={() => setOpen(false)}
                   className={`text-4xl transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
                     open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
                   }`}
@@ -228,6 +229,7 @@ function App() {
                 <a
                   key={label}
                   href="#"
+                  onClick={() => setOpen(false)}
                   className={`text-sm transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
                     open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                   }`}
