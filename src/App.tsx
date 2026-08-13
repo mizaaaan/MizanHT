@@ -36,6 +36,31 @@ function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
+  // Track the last input modality so focus rings only ever appear for
+  // genuine keyboard navigation — never when the menu is tapped, even if
+  // the browser's :focus-visible heuristics would normally paint one.
+  useEffect(() => {
+    const root = document.documentElement
+    const onPointer = () => {
+      root.dataset.input = 'pointer'
+    }
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (
+        ['Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(
+          e.key,
+        )
+      ) {
+        root.dataset.input = 'keyboard'
+      }
+    }
+    root.addEventListener('pointerdown', onPointer)
+    root.addEventListener('keydown', onKeyDown)
+    return () => {
+      root.removeEventListener('pointerdown', onPointer)
+      root.removeEventListener('keydown', onKeyDown)
+    }
+  }, [])
+
   // Move focus into the drawer when it opens and trap Tab inside it.
   // Focus the panel itself (tabIndex -1) rather than the first link so
   // tapping the menu never paints a focus ring on a nav item.

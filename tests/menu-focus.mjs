@@ -42,18 +42,25 @@ try {
     page.evaluate((sel) => {
       const active = document.activeElement
       const link = document.querySelector(sel)
+      const panel = document.querySelector('#menu-panel')
       const s = getComputedStyle(link)
+      const ps = getComputedStyle(panel)
       return {
         activeTag: active?.tagName ?? null,
         activeId: active?.id ?? null,
         activeText: active?.textContent?.trim().slice(0, 30) ?? null,
         storyOutlineStyle: s.outlineStyle,
         storyOutlineWidth: s.outlineWidth,
+        panelOutlineStyle: ps.outlineStyle,
+        panelOutlineWidth: ps.outlineWidth,
+        inputMode: document.documentElement.dataset.input ?? null,
       }
     }, storyLink)
 
   const ringVisible = (st) =>
     st.storyOutlineStyle !== 'none' && parseFloat(st.storyOutlineWidth) > 0
+  const panelRingVisible = (st) =>
+    st.panelOutlineStyle !== 'none' && parseFloat(st.panelOutlineWidth) > 0
 
   let failures = 0
   const check = (cond, msg) => {
@@ -68,8 +75,10 @@ try {
   console.log('\n--- After first tap-open ---')
   console.log('  activeElement:', st.activeTag, st.activeId, JSON.stringify(st.activeText))
   console.log('  Story outline:', st.storyOutlineStyle, st.storyOutlineWidth)
+  console.log('  Panel outline:', st.panelOutlineStyle, st.panelOutlineWidth, '(input:', st.inputMode, ')')
   check(st.activeId === 'menu-panel', 'focus lands on the dialog panel, not a nav link')
   check(!ringVisible(st), 'no visible ring on "Story" after tap-open')
+  check(!panelRingVisible(st), 'no visible ring on the drawer panel after tap-open')
 
   // --- Scenario 2: open/close/reopen repeatedly (the flaky repro) ------------
   for (let i = 0; i < 4; i++) {
@@ -79,12 +88,31 @@ try {
     await page.waitForTimeout(700)
     st = await state()
     console.log(`\n--- After reopen #${i + 1} ---`)
-    console.log('  activeElement:', st.activeTag, st.activeId, JSON.stringify(st.activeText))
     console.log('  Story outline:', st.storyOutlineStyle, st.storyOutlineWidth)
+    console.log('  Panel outline:', st.panelOutlineStyle, st.panelOutlineWidth, '(input:', st.inputMode, ')')
     check(!ringVisible(st), `no visible ring on "Story" after reopen #${i + 1}`)
+    check(!panelRingVisible(st), `no visible ring on the panel after reopen #${i + 1}`)
   }
 
-  // The loop above leaves the drawer open — keyboard scenarios run now
+  // Close the drawer so we can reproduce the exact flaky case below
+  await page.click(hamburger)
+  await page.waitForTimeout(700)
+
+  // --- Scenario 2b: keypress first, THEN tap (the flaky repro) ---------------
+  // With the old code, Chrome remembered the keyboard interaction and
+  // painted a ring on programmatic focus even though the tap that opened
+  // the menu was a pointer interaction.
+  console.log('\n--- Keypress then tap-open ---')
+  await page.keyboard.press('ArrowDown') // makes the browser treat input as keyboard
+  await page.click(hamburger) // pointer interaction must override it
+  await page.waitForTimeout(700)
+  st = await state()
+  console.log('  input mode:', st.inputMode)
+  console.log('  Story outline:', st.storyOutlineStyle, st.storyOutlineWidth)
+  console.log('  Panel outline:', st.panelOutlineStyle, st.panelOutlineWidth)
+  check(st.inputMode === 'pointer', 'pointer interaction resets the tracked input mode')
+  check(!ringVisible(st), 'no visible ring on "Story" after keypress-then-tap')
+  check(!panelRingVisible(st), 'no visible ring on the panel after keypress-then-tap')
 
   // --- Scenario 3: keyboard users still get focus + a visible indicator ------
   console.log('\n--- Keyboard (Tab) ---')
