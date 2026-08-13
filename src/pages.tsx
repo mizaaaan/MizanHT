@@ -5,12 +5,16 @@ const CONTACT_EMAIL = 'md.mizan235@gmail.com'
 
 const SOCIAL_LINKS = ['Instagram', 'TikTok', 'YouTube']
 
+// Stable placeholder thumbnails — swap these URLs for real photos later
+const placeholder = (seed: string) => `https://picsum.photos/seed/${seed}/320/200`
+
 const JOBS = [
   {
     title: 'Owner & Manager',
     org: 'Dream Pharmacy',
     location: 'Dhaka, Bangladesh',
     period: '2022 – Present',
+    thumb: placeholder('dream-pharmacy'),
     bullets: [
       'Manage daily operations of a community pharmacy',
       'Handle medicine purchasing, inventory, storage, and stock management',
@@ -28,6 +32,7 @@ const JOBS = [
     org: 'Life Line Hospital Pvt.',
     location: null,
     period: '2021 – 2022',
+    thumb: placeholder('life-line-hospital'),
     bullets: [
       'Assisted with hospital administration and daily healthcare operations',
       'Coordinated with medical staff, patients, and administrative personnel',
@@ -42,6 +47,7 @@ const JOBS = [
     org: 'Al-Habib Hospital Pvt.',
     location: null,
     period: '2018 – 2022',
+    thumb: placeholder('al-habib-hospital'),
     bullets: [
       'Assisted doctors and healthcare professionals with routine clinical activities',
       'Supported patient care and basic clinical procedures',
@@ -57,6 +63,7 @@ const JOBS = [
     org: 'Pharmacy Training',
     location: null,
     period: '2018 – 2019',
+    thumb: placeholder('pharmacy-intern'),
     bullets: [
       'Completed practical pharmacy training',
       'Assisted with medicine dispensing and prescription-related activities',
@@ -98,33 +105,60 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   )
 }
 
+function Thumb({
+  src,
+  alt,
+  className = 'h-20 w-28',
+}: {
+  src: string
+  alt: string
+  className?: string
+}) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      className={`shrink-0 border border-cream/20 object-cover ${className}`}
+    />
+  )
+}
+
 function Entry({
   title,
   meta,
   bullets,
+  thumb,
 }: {
   title: string
   meta?: string
   bullets: string[]
+  thumb?: string
 }) {
   return (
-    <div>
-      <h3 className="text-lg">{title}</h3>
-      {meta ? <p className="mt-1 text-sm text-cream/60">{meta}</p> : null}
-      <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-cream/85 marker:text-cream/40">
-        {bullets.map((b) => (
-          <li key={b}>{b}</li>
-        ))}
-      </ul>
+    <div className="flex gap-5">
+      {thumb ? <Thumb src={thumb} alt={title} /> : null}
+      <div>
+        <h3 className="text-lg">{title}</h3>
+        {meta ? <p className="mt-1 text-sm text-cream/60">{meta}</p> : null}
+        <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-cream/85 marker:text-cream/40">
+          {bullets.map((b) => (
+            <li key={b}>{b}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }
 
-function List({ items }: { items: string[] }) {
+function List({ items }: { items: { label: string; thumb: string }[] }) {
   return (
-    <ul className="grid list-disc gap-2 pl-5 text-sm leading-relaxed text-cream/85 marker:text-cream/40 sm:grid-cols-2">
+    <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
       {items.map((item) => (
-        <li key={item}>{item}</li>
+        <li key={item.label} className="flex items-center gap-3">
+          <Thumb src={item.thumb} alt={item.label} className="h-12 w-16" />
+          <span className="text-sm leading-relaxed text-cream/85">{item.label}</span>
+        </li>
       ))}
     </ul>
   )
@@ -152,6 +186,7 @@ export function StoryPage() {
         <Entry
           title="Bachelor of Science (BSc) in Chemistry — Honours"
           meta="National University of Bangladesh"
+          thumb={placeholder('chemistry')}
           bullets={[
             'Major: Chemistry',
             'Currently completing the degree',
@@ -160,6 +195,7 @@ export function StoryPage() {
         />
         <Entry
           title="Diploma in Pharmaceutical Technology"
+          thumb={placeholder('pharmaceutical-technology')}
           bullets={[
             'Professional training in pharmaceutical technology, medicines, pharmacy operations, and pharmaceutical practices',
           ]}
@@ -167,12 +203,14 @@ export function StoryPage() {
         <Entry
           title="Health Technology and Services"
           meta="Noakhali Paramedical College"
+          thumb={placeholder('health-technology')}
           bullets={[
             'Professional healthcare-related training covering health technology and healthcare services',
           ]}
         />
         <Entry
           title="1-Year Nursing Certificate"
+          thumb={placeholder('nursing')}
           bullets={['Completed one-year professional nursing-related training']}
         />
       </Section>
@@ -189,12 +227,18 @@ export function StoryPage() {
       <Section title="Professional Qualifications">
         <List
           items={[
-            'Licensed Pharmacist',
-            'Certified Chemist',
-            'Medical Assistant',
-            'Diploma in Pharmaceutical Technology',
-            'Health Technology & Services training',
-            '1-Year Nursing Certificate',
+            { label: 'Licensed Pharmacist', thumb: placeholder('licensed-pharmacist') },
+            { label: 'Certified Chemist', thumb: placeholder('certified-chemist') },
+            { label: 'Medical Assistant', thumb: placeholder('medical-assistant') },
+            {
+              label: 'Diploma in Pharmaceutical Technology',
+              thumb: placeholder('pharma-diploma'),
+            },
+            {
+              label: 'Health Technology & Services training',
+              thumb: placeholder('health-training'),
+            },
+            { label: '1-Year Nursing Certificate', thumb: placeholder('nursing-certificate') },
           ]}
         />
       </Section>
@@ -202,17 +246,23 @@ export function StoryPage() {
       <Section title="Professional Strengths">
         <List
           items={[
-            'Patient-focused communication',
-            'Pharmacy management',
-            'Healthcare service',
-            'Medical administration',
-            'Teamwork',
-            'Professional responsibility',
-            'Pharmaceutical inventory management',
-            'Problem solving',
-            'Customer service',
-            'Healthcare documentation',
-            'Business and operational management',
+            { label: 'Patient-focused communication', thumb: placeholder('communication') },
+            { label: 'Pharmacy management', thumb: placeholder('pharmacy-management') },
+            { label: 'Healthcare service', thumb: placeholder('healthcare-service') },
+            { label: 'Medical administration', thumb: placeholder('medical-administration') },
+            { label: 'Teamwork', thumb: placeholder('teamwork') },
+            { label: 'Professional responsibility', thumb: placeholder('responsibility') },
+            {
+              label: 'Pharmaceutical inventory management',
+              thumb: placeholder('inventory-management'),
+            },
+            { label: 'Problem solving', thumb: placeholder('problem-solving') },
+            { label: 'Customer service', thumb: placeholder('customer-service') },
+            { label: 'Healthcare documentation', thumb: placeholder('documentation') },
+            {
+              label: 'Business and operational management',
+              thumb: placeholder('business-management'),
+            },
           ]}
         />
       </Section>
@@ -220,16 +270,19 @@ export function StoryPage() {
       <Section title="Languages">
         <List
           items={[
-            'Bangla — Native',
-            'English — Professional',
-            'Arabic — Working Knowledge',
-            'Urdu/Hindi — Working Knowledge',
+            { label: 'Bangla — Native', thumb: placeholder('bangla') },
+            { label: 'English — Professional', thumb: placeholder('english') },
+            { label: 'Arabic — Working Knowledge', thumb: placeholder('arabic') },
+            { label: 'Urdu/Hindi — Working Knowledge', thumb: placeholder('urdu-hindi') },
           ]}
         />
       </Section>
 
       <Section title="References">
-        <p className="text-sm leading-relaxed text-cream/85">Available upon request.</p>
+        <div className="flex items-center gap-5">
+          <Thumb src={placeholder('references')} alt="References" />
+          <p className="text-sm leading-relaxed text-cream/85">Available upon request.</p>
+        </div>
       </Section>
     </Page>
   )
@@ -244,6 +297,9 @@ export function JobsPage() {
             <thead>
               <tr className="border-b border-cream/20">
                 <th className="pb-3 pr-6 text-xs font-normal uppercase tracking-wider text-cream/60">
+                  Photo
+                </th>
+                <th className="pb-3 pr-6 text-xs font-normal uppercase tracking-wider text-cream/60">
                   Position
                 </th>
                 <th className="pb-3 pr-6 text-xs font-normal uppercase tracking-wider text-cream/60">
@@ -257,6 +313,9 @@ export function JobsPage() {
             <tbody>
               {JOBS.map((job) => (
                 <tr key={job.title} className="border-b border-cream/10">
+                  <td className="py-4 pr-6">
+                    <Thumb src={job.thumb} alt={job.title} className="h-10 w-14" />
+                  </td>
                   <td className="py-4 pr-6 text-sm text-cream">{job.title}</td>
                   <td className="py-4 pr-6 text-sm text-cream/85">{job.org}</td>
                   <td className="py-4 text-sm text-cream/60">{job.period}</td>
@@ -273,6 +332,7 @@ export function JobsPage() {
             key={job.title}
             title={job.title}
             meta={[job.location, job.org, job.period].filter(Boolean).join(' — ')}
+            thumb={job.thumb}
             bullets={job.bullets}
           />
         ))}
