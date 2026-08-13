@@ -1,11 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
+import { JobsPage, MessagePage, StoryPage } from './pages'
 
 const BG_URL =
   'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260729_022513_486985a2-ac8c-4278-91a8-071dcd9fcaff.png&w=1280&q=85'
 
 const PORTRAIT_URL = '/portrait.png'
 
-const NAV_LINKS = ['Story', 'Jobs', 'Message']
+const NAV_LINKS = [
+  { label: 'Story', href: '#/story' },
+  { label: 'Jobs', href: '#/jobs' },
+  { label: 'Message', href: '#/message' },
+]
 const SOCIAL_LINKS = ['Instagram', 'TikTok', 'YouTube']
 
 // Drop the entrance animation after it completes so `animation-fill-mode: both`
@@ -14,7 +19,79 @@ function releaseEntrance(e: React.AnimationEvent<HTMLAnchorElement>) {
   e.currentTarget.classList.remove('anim-fade-up')
 }
 
+function readRoute() {
+  const path = window.location.hash.replace(/^#/, '')
+  return path.startsWith('/') ? path : `/${path}`
+}
+
+function useHashRoute() {
+  const [route, setRoute] = useState(readRoute)
+  useEffect(() => {
+    const onHashChange = () => setRoute(readRoute())
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+  return route
+}
+
+function Hero() {
+  return (
+    <main className="relative h-[100dvh] w-full overflow-hidden bg-black text-cream">
+      {/* Background image — full bleed, behind everything */}
+      <img
+        src={BG_URL}
+        alt=""
+        className="anim-fade-in absolute inset-0 z-0 h-full w-full object-cover"
+      />
+
+      {/* Marquee — giant scrolling name */}
+      <div
+        className="anim-fade-up absolute inset-x-0 top-[16vh] z-10 overflow-hidden sm:top-[14vh]"
+        style={{ animationDelay: '500ms' }}
+      >
+        <div className="marquee flex w-max whitespace-nowrap font-hn text-[16vh] leading-none text-cream sm:text-[26vh]">
+          <span className="pr-[6vw]">Mizan&nbsp;&mdash;&nbsp;Health&nbsp;Technologist&nbsp;</span>
+          <span className="pr-[6vw]" aria-hidden="true">
+            Mizan&nbsp;&mdash;&nbsp;Health&nbsp;Technologist&nbsp;
+          </span>
+        </div>
+      </div>
+
+      {/* Horizontal cream rule */}
+      <div
+        className="anim-line absolute inset-x-6 bottom-[5.5rem] z-10 h-0.5 bg-cream sm:inset-x-10 sm:bottom-28"
+        style={{ animationDelay: '1200ms' }}
+      />
+
+      {/* Footer blurb */}
+      <footer className="absolute inset-x-0 bottom-0 z-30 flex items-end justify-between px-6 pb-5 font-hn text-xs leading-relaxed sm:z-10 sm:px-10 sm:pb-8 sm:text-sm">
+        <div className="anim-fade-up" style={{ animationDelay: '1400ms' }}>
+          <p>Health Technologist</p>
+          <p>Digital Crafter</p>
+          <p>Obsessed by The Office</p>
+        </div>
+        <div
+          className="anim-fade-up text-right"
+          style={{ animationDelay: '1550ms' }}
+        >
+          <p>Portfolio of</p>
+          <p>Md Mizanur Rahman</p>
+        </div>
+      </footer>
+
+      {/* Front portrait — cutout over the marquee */}
+      <img
+        src={PORTRAIT_URL}
+        alt="Portrait"
+        className="anim-rise-in pointer-events-none absolute inset-0 z-20 h-full w-full object-cover"
+        style={{ animationDelay: '300ms' }}
+      />
+    </main>
+  )
+}
+
 function App() {
+  const route = useHashRoute()
   const [open, setOpen] = useState(false)
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const panelRef = useRef<HTMLElement>(null)
@@ -103,62 +180,28 @@ function App() {
     wasOpen.current = open
   }, [open])
 
+  // Scroll to the top when the page changes
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [route])
+
+  const page =
+    route === '/story' ? (
+      <StoryPage />
+    ) : route === '/jobs' ? (
+      <JobsPage />
+    ) : route === '/message' ? (
+      <MessagePage />
+    ) : (
+      <Hero />
+    )
+
   return (
-    <main className="relative h-[100dvh] w-full overflow-hidden bg-black text-cream">
-      {/* Background image — full bleed, behind everything */}
-      <img
-        src={BG_URL}
-        alt=""
-        className="anim-fade-in absolute inset-0 z-0 h-full w-full object-cover"
-      />
-
-      {/* Marquee — giant scrolling name */}
-      <div
-        className="anim-fade-up absolute inset-x-0 top-[16vh] z-10 overflow-hidden sm:top-[14vh]"
-        style={{ animationDelay: '500ms' }}
-      >
-        <div className="marquee flex w-max whitespace-nowrap font-hn text-[16vh] leading-none text-cream sm:text-[26vh]">
-          <span className="pr-[6vw]">Mizan&nbsp;&mdash;&nbsp;Health&nbsp;Technologist&nbsp;</span>
-          <span className="pr-[6vw]" aria-hidden="true">
-            Mizan&nbsp;&mdash;&nbsp;Health&nbsp;Technologist&nbsp;
-          </span>
-        </div>
-      </div>
-
-      {/* Horizontal cream rule */}
-      <div
-        className="anim-line absolute inset-x-6 bottom-[5.5rem] z-10 h-0.5 bg-cream sm:inset-x-10 sm:bottom-28"
-        style={{ animationDelay: '1200ms' }}
-      />
-
-      {/* Footer blurb */}
-      <footer className="absolute inset-x-0 bottom-0 z-30 flex items-end justify-between px-6 pb-5 font-hn text-xs leading-relaxed sm:z-10 sm:px-10 sm:pb-8 sm:text-sm">
-        <div className="anim-fade-up" style={{ animationDelay: '1400ms' }}>
-          <p>Health Technologist</p>
-          <p>Digital Crafter</p>
-          <p>Obsessed by The Office</p>
-        </div>
-        <div
-          className="anim-fade-up text-right"
-          style={{ animationDelay: '1550ms' }}
-        >
-          <p>Portfolio of</p>
-          <p>Md Mizanur Rahman</p>
-        </div>
-      </footer>
-
-      {/* Front portrait — cutout over the marquee */}
-      <img
-        src={PORTRAIT_URL}
-        alt="Portrait"
-        className="anim-rise-in pointer-events-none absolute inset-0 z-20 h-full w-full object-cover"
-        style={{ animationDelay: '300ms' }}
-      />
-
+    <div className="relative min-h-[100dvh] bg-black text-cream">
       {/* Header chrome */}
-      <header className="absolute inset-x-0 top-0 z-30 flex items-start justify-between px-6 pt-6 sm:px-10 sm:pt-8">
+      <header className="fixed inset-x-0 top-0 z-30 flex items-start justify-between px-6 pt-6 sm:px-10 sm:pt-8">
         <a
-          href="#"
+          href="#/"
           className="anim-fade-up font-hn text-lg tracking-wide"
           style={{ animationDelay: '800ms' }}
         >
@@ -173,10 +216,10 @@ function App() {
             2026
           </span>
           <nav className="flex flex-col gap-0.5 text-sm">
-            {NAV_LINKS.map((label, i) => (
+            {NAV_LINKS.map(({ label, href }, i) => (
               <a
                 key={label}
-                href="#"
+                href={href}
                 onAnimationEnd={releaseEntrance}
                 className="anim-fade-up transition-opacity duration-300 hover:opacity-60"
                 style={{ animationDelay: `${1000 + i * 80}ms` }}
@@ -209,7 +252,7 @@ function App() {
         aria-expanded={open}
         aria-controls="menu-panel"
         onClick={() => setOpen((v) => !v)}
-        className="anim-fade-up absolute right-6 top-6 z-50 flex h-10 w-10 items-center justify-center sm:hidden"
+        className="anim-fade-up fixed right-6 top-6 z-50 flex h-10 w-10 items-center justify-center sm:hidden"
         style={{ animationDelay: '900ms' }}
       >
         <span className="relative block h-4 w-6">
@@ -266,10 +309,10 @@ function App() {
               Site Index
             </p>
             <nav className="mt-6 flex flex-col gap-3">
-              {NAV_LINKS.map((label, i) => (
+              {NAV_LINKS.map(({ label, href }, i) => (
                 <a
                   key={label}
-                  href="#"
+                  href={href}
                   onClick={() => setOpen(false)}
                   className={`text-4xl transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
                     open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
@@ -307,7 +350,9 @@ function App() {
           </div>
         </aside>
       </div>
-    </main>
+
+      {page}
+    </div>
   )
 }
 
