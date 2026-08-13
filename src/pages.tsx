@@ -5,8 +5,9 @@ const CONTACT_EMAIL = 'md.mizan235@gmail.com'
 
 const SOCIAL_LINKS = ['Instagram', 'TikTok', 'YouTube']
 
-// Stable placeholder thumbnails — swap these URLs for real photos later
-const placeholder = (seed: string) => `https://picsum.photos/seed/${seed}/320/200`
+// Shared sample thumbnail — replace public/sample.jpg with your own photo
+// and every thumbnail on the Story and Jobs pages updates automatically.
+const placeholder = (_seed: string) => '/sample.jpg'
 
 const JOBS = [
   {
