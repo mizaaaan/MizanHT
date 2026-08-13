@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
 
 const BG_URL =
   'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260729_022513_486985a2-ac8c-4278-91a8-071dcd9fcaff.png&w=1280&q=85'
@@ -17,6 +16,8 @@ function releaseEntrance(e: React.AnimationEvent<HTMLAnchorElement>) {
 
 function App() {
   const [open, setOpen] = useState(false)
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const panelRef = useRef<HTMLElement>(null)
 
   // Lock body scroll while the drawer is open
   useEffect(() => {
@@ -34,6 +35,43 @@ function App() {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  // Move focus into the drawer when it opens and trap Tab inside it
+  useEffect(() => {
+    if (!open) return
+    const panel = panelRef.current
+    if (!panel) return
+    const focusables = panel.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    )
+    const first = focusables[0] ?? panel
+    const last = focusables[focusables.length - 1] ?? panel
+    first.focus()
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return
+      const active = document.activeElement
+      const inside = active instanceof Node && panel.contains(active)
+      if (e.shiftKey) {
+        if (!inside || active === first) {
+          e.preventDefault()
+          last.focus()
+        }
+      } else if (!inside || active === last) {
+        e.preventDefault()
+        first.focus()
+      }
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [open])
+
+  // Return focus to the menu button after the drawer closes
+  const wasOpen = useRef(false)
+  useEffect(() => {
+    if (wasOpen.current && !open) menuButtonRef.current?.focus()
+    wasOpen.current = open
+  }, [open])
 
   return (
     <main className="relative h-[100dvh] w-full overflow-hidden bg-black text-cream">
@@ -136,8 +174,10 @@ function App() {
       {/* Mobile hamburger — morphs into an X */}
       <button
         type="button"
+        ref={menuButtonRef}
         aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
+        aria-controls="menu-panel"
         onClick={() => setOpen((v) => !v)}
         className="anim-fade-up absolute right-6 top-6 z-50 flex h-10 w-10 items-center justify-center sm:hidden"
         style={{ animationDelay: '900ms' }}
@@ -166,6 +206,7 @@ function App() {
         {/* Backdrop */}
         <div
           onClick={() => setOpen(false)}
+          aria-hidden="true"
           className={`fixed inset-0 z-40 bg-black/40 backdrop-blur-sm transition-opacity duration-500 ${
             open ? 'opacity-100' : 'pointer-events-none opacity-0'
           }`}
@@ -173,24 +214,17 @@ function App() {
 
         {/* Panel */}
         <aside
+          ref={panelRef}
+          id="menu-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Menu"
           aria-hidden={!open}
           inert={!open}
           className={`fixed right-0 top-0 z-40 h-full w-[80%] max-w-sm bg-[#141414] px-8 py-10 transition-transform duration-[600ms] ease-[cubic-bezier(0.76,0,0.24,1)] ${
             open ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
-          <button
-            type="button"
-            aria-label="Close menu"
-            onClick={() => setOpen(false)}
-            className={`absolute right-6 top-6 text-cream transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
-              open ? 'rotate-0 opacity-100' : 'rotate-90 opacity-0'
-            }`}
-            style={{ transitionDelay: open ? '300ms' : '0ms' }}
-          >
-            <X size={26} strokeWidth={1.5} />
-          </button>
-
           <div className="flex h-full flex-col pt-12">
             <p
               className={`uppercase tracking-[0.2em] text-cream/50 transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
