@@ -4,6 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mizan — Health Technologist</title>
+    <!-- Fetch the font file itself at the highest priority, in parallel with
+         the stylesheet, so the custom font is ready before the first paint
+         instead of swapping in late (FOUT). `crossorigin` is required: the
+         @font-face fetch is a CORS request, and without it the preload would
+         be downloaded twice. -->
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="https://db.onlinewebfonts.com/t/95cecf452d3208890088a5b4c19c7ecf.woff2"
+    />
     <!-- Fetch the webfont stylesheet at high priority (preload) without
          blocking render, then apply it once loaded. The noscript fallback
          covers browsers with JavaScript disabled. -->
