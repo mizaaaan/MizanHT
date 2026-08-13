@@ -75,7 +75,7 @@ function App() {
           style={{ animationDelay: '1550ms' }}
         >
           <p>Portfolio of</p>
-          <p>Mizanur Rahman</p>
+          <p>Md Mizanur Rahman</p>
         </div>
       </footer>
 
