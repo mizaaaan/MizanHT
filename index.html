@@ -4,11 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mizan — Health Technologist</title>
+    <!-- Fetch the webfont stylesheet at high priority (preload) without
+         blocking render, then apply it once loaded. The noscript fallback
+         covers browsers with JavaScript disabled. -->
     <link
-      rel="stylesheet"
-      media="print"
-      onload="this.media='all'"
+      rel="preload"
+      as="style"
       href="https://db.onlinewebfonts.com/c/95cecf452d3208890088a5b4c19c7ecf?family=Helvetica+Neue+ME"
+      onload="this.onload=null;this.rel='stylesheet'"
     />
     <noscript>
       <link
