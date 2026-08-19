@@ -370,6 +370,7 @@ export function MessagePage() {
             <a
               key={label}
               href="#"
+              onClick={(e) => e.preventDefault()}
               className="text-sm text-cream/85 underline-offset-4 hover:underline"
             >
               {label}

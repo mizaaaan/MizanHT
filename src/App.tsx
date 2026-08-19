@@ -233,6 +233,7 @@ function App() {
               <a
                 key={label}
                 href="#"
+                onClick={(e) => e.preventDefault()}
                 onAnimationEnd={releaseEntrance}
                 className="anim-fade-up transition-opacity duration-300 hover:opacity-60"
                 style={{ animationDelay: `${1150 + i * 80}ms` }}
@@ -337,7 +338,10 @@ function App() {
                 <a
                   key={label}
                   href="#"
-                  onClick={() => setOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    setOpen(false)
+                  }}
                   className={`text-sm transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
                     open ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                   }`}
